@@ -1,6 +1,7 @@
 version: '3'
 services:
   mysql:
+    container_name: mysql
     image: mariadb:10.5.9
     logging:
       driver: none
@@ -13,9 +14,9 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
-    networks:
-      - default
+
   litespeed:
+    container_name: litespeed
     image: litespeedtech/openlitespeed:${OLS_VERSION}-${PHP_VERSION}
     logging:
       driver: none
@@ -28,28 +29,27 @@ services:
       - ./sites:/var/www/vhosts/
       - ./acme:/root/.acme.sh/
       - ./logs:/usr/local/lsws/logs/
-    ports:
-      - 80:80
-      - 443:443
-      - 443:443/udp
-      - 7080:7080
+    # ports:
+    #   - 80:80
+    #   - 443:443
+    #   - 443:443/udp
+    #   - 7080:7080
     restart: always
     environment:
       TZ: ${TimeZone}
-    networks:
-      - default
-  phpmyadmin:
-    image: bitnami/phpmyadmin:5.0.2-debian-10-r72
-    logging:
-      driver: none
-    ports:
-      - 8080:80
-      - 8443:443
-    environment:
-      DATABASE_HOST: mysql
-    restart: always
-    networks:
-      - default
+
+  # phpmyadmin:
+  #   image: bitnami/phpmyadmin:5.0.2-debian-10-r72
+  #   logging:
+  #     driver: none
+  #   ports:
+  #     - 8080:80
+  #     - 8443:443
+  #   environment:
+  #     DATABASE_HOST: mysql
+  #   restart: always
+
 networks:
   default:
-    driver: bridge
+    external:
+      name: darkraise
